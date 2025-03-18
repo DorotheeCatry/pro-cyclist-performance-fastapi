@@ -1,4 +1,3 @@
-import sqlite3
 from app.db.db_utils import get_db_connection
 
 def modify_athlete(id: int, data: dict) -> dict:
@@ -28,7 +27,6 @@ def modify_athlete(id: int, data: dict) -> dict:
         username = cursor.fetchone()["username"]
         
         conn.commit() # Valide la transaction : utile pour les INSERT, UPDATE, DELETE
-        conn.close() # Fermeture de la connexion
         
         result["status"] = True
         result["message"] = f"User {username} successfully updated!"
@@ -37,6 +35,8 @@ def modify_athlete(id: int, data: dict) -> dict:
         result["message"] = "Error during the creation of new user : " + str(e)
     except Exception as e:
         result["message"] = "Error during the creation of new user : " + str(e)
+    finally:
+        conn.close() # Fermeture de la connexion
     
     return result
 

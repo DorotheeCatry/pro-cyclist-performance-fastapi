@@ -1,4 +1,3 @@
-import sqlite3
 from app.db.db_utils import get_db_connection
 from app.core.security import get_password_hash
 
@@ -17,10 +16,9 @@ def create_user(data: dict) -> dict:
         
         requete = """INSERT INTO athlete (user_id, sex, first_name, last_name, age, height, weight, VO2_max, FTP) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);""" # Requête SQL à executer
 
-        cursor.execute(requete, (cursor.lastrowid, 0, "John/Jane", "Doe,", 18, 160, 60, 0, 0)) # exécution de la requête avec les valeurs à insérer
+        cursor.execute(requete, (cursor.lastrowid, 0, "John/Jane", "Doe", 18, 160, 60, 0, 0)) # exécution de la requête avec les valeurs à insérer
 
         conn.commit() # Valide la transaction : utile pour les INSERT, UPDATE, DELETE
-        conn.close() # Fermeture de la connexion
         
         result["status"] = True
         result["message"] = f"User {data["username"]} successfully created!"
@@ -29,6 +27,8 @@ def create_user(data: dict) -> dict:
         result["message"] = "Error during the creation of new user : " + str(e)
     except Exception as e:
         result["message"] = "Error during the creation of new user : " + str(e)
+    finally:
+        conn.close() # Fermeture de la connexion
         
     return result
 

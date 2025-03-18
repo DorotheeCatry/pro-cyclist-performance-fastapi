@@ -6,6 +6,7 @@ from fastapi.security import OAuth2PasswordBearer
 # from app.db.db_utils import get_session
 from app.db.create_user import create_user
 from app.db.modify_athlete import modify_athlete
+from app.db.test_session import create_session
 from app.utils.jwt_handler import verify_token
 
 router = APIRouter()
@@ -20,6 +21,11 @@ def api_create_user(data: dict):
 @router.post("/users/modify_athlete")
 def api_modify_ahtlete(id: int, data: dict):
     result = modify_athlete(id, data)
+    return result["message"]
+
+@router.post("/users/create_session")
+def api_create_session(athlete_id: int, data: dict):
+    result = create_session(athlete_id, data)
     return result["message"]
 
 # @router.get("/users/me", response_model=UserRead)

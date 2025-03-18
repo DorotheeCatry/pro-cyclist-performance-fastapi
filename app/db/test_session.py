@@ -17,16 +17,17 @@ def create_session(athlete_id: int, data: dict) -> dict:
         
         conn.commit() # Valide la transaction : utile pour les INSERT, UPDATE, DELETE
         new_id = cursor.lastrowid
-        conn.close() # Fermeture de la connexion
         
         result["status"] = True
         result["message"] = f"Session #{new_id} successfully created!"
         
     except ValueError as e:
-        result["message"] = "Error during the creation of new session : " + str(e)
+        result["message"] = "Error during the creation of new user : " + str(e)
     except Exception as e:
-        result["message"] = "Error during the creation of new session : " + str(e)
-        
+        result["message"] = "Error during the creation of new user : " + str(e)
+    finally:
+        conn.close() # Fermeture de la connexion
+    
     return result
 
 if __name__ == "__main__":
