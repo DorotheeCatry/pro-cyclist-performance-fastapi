@@ -3,7 +3,7 @@ from fastapi.security import OAuth2PasswordBearer
 from sqlmodel import Session, select
 from app.models.user import User
 from app.schemas.user import UserRead
-from app.db.session import get_session
+from app.db.db_utils import get_session
 from app.utils.jwt_handler import verify_token
 
 router = APIRouter()

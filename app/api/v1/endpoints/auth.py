@@ -3,7 +3,7 @@ from sqlmodel import Session, select
 from app.schemas.user import UserCreate, UserRead
 from app.schemas.auth import Token
 from app.models.user import User
-from app.db.session import get_session
+from app.db.db_utils import get_session
 from app.core.security import get_password_hash, verify_password
 from app.utils.jwt_handler import create_access_token
 from pydantic import BaseModel
