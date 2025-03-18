@@ -2,7 +2,7 @@ import sqlite3
 
 def create_db():    
 
-    conn = sqlite3.connect('users.db') # Connexion à la base de données
+    conn = sqlite3.connect('app/db/users.db') # Connexion à la base de données
     cursor = conn.cursor() # Création d'un curseur
 
     requetes = ["""CREATE TABLE IF NOT EXISTS user 
