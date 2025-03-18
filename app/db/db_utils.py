@@ -10,7 +10,8 @@ def create_db():
     username TEXT UNIQUE,
     password TEXT,
     email TEXT UNIQUE,
-    subscription_date DATE DEFAULT (DATE('now'))
+    subscription_date DATE DEFAULT (DATE('now')),
+    role INTEGER
     );""", 
     """CREATE TABLE IF NOT EXISTS athlete 
     (user_id INTEGER,    
