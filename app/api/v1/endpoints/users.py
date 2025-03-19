@@ -17,7 +17,7 @@ def api_create_session(athlete_id: int, data: dict):
     result = create_session(athlete_id, data)
     return result["message"]
 
-@router.post("/users/get_athlete")
+@router.post("/get_athlete")
 def api_get_athlete_by_id(athlete_id: int):
     result = get_athlete_by_id(athlete_id)
     return result
