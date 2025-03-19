@@ -4,18 +4,24 @@ from enums import States
 
 def display_sidebar() -> None:
     """
-    Display the current game state in the sidebar
+    Display the navigation sidebar
     """
     
     with st.sidebar:
-        # x = 0        
+          
         # st.divider()
         
         if not st.session_state.login:            
-        
-            if st.button("login"):
-                st.session_state.state = States.LOGIN
-                st.rerun()
+            col1, col2 = st.columns(2)
+            with col1:
+                if st.button("Login"):
+                    st.session_state.state = States.LOGIN
+                    st.rerun()
+            
+            with col2:
+                if st.button("Register"):
+                    st.session_state.state = States.REGISTER
+                    st.rerun()
         
         else:
             st.write(f"Welcome {st.session_state.current_user["username"]}.")

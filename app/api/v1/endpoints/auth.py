@@ -26,7 +26,7 @@ def register(username: str, email: str, password: str, role: str):
     conn = get_db_connection()
     cursor = conn.cursor()
     successfully_created = False
-    response = {}
+    response = {"message" : "", "status": 0}
     
     try:
         cursor.execute(
@@ -37,15 +37,20 @@ def register(username: str, email: str, password: str, role: str):
         
         conn.commit()
         successfully_created = True
+
+    except Exception as e:
+        response["message"] = str(e)
         
-    except sqlite3.IntegrityError:
-        raise HTTPException(status_code=400, detail="Username or email already exists")
     finally:
         conn.close()
 
     if successfully_created:
         response["user"] = {"id": user_id, "username": username, "email": email, "role": role}
         response["athlete"] = create_athlete(user_id)["message"]
+        response["message"] = f"User {username} successfully created!"
+        response["status"] = 1
+    
+    print(response["message"])
     
     return response
 
