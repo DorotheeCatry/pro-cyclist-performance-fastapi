@@ -21,6 +21,7 @@ def api_create_session(athlete_id: int, data: dict):
 def api_get_athlete_by_id(athlete_id: int):
     result = get_athlete_by_id(athlete_id)
     return result
+
 @router.post("/delete_account")
 def delete_account(current_user: dict = Depends(get_current_user)):
     """
