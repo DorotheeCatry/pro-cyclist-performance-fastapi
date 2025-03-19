@@ -24,6 +24,13 @@ app = FastAPI(
     📌 Explore the interactive documentation at `/docs` or `/redoc`.
     """)
 
+@app.get("/", tags=["Welcome"])
+def read_root():
+    """Returns API description on the home page."""
+    return {
+        "Welcome to the Pro Cyclist Performance API! Use this API to manage athletes and analyze performance data."
+    }
+
 app.include_router(auth.router, prefix="/api/v1/auth", tags=["auth"])
 app.include_router(users.router, prefix="/api/v1/users", tags=["users"])
 app.include_router(stats.router, prefix="/api/v1/stats", tags=["stats"])
