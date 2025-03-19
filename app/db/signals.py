@@ -41,49 +41,28 @@ def generate_realistic_cyclist(user_id):
     """Generate an athlete with realistic physiological data"""
     sex = random.choice([0, 1])  # 0 = female, 1 = male
     
-    if sex == 1:
-        first_name = fake.first_name_male()
-    else:
-        first_name = fake.first_name_female()
-
+    first_name = fake.first_name_male() if sex == 1 else fake.first_name_female()
     last_name = fake.last_name()
-    
     age = random.randint(22, 35)  # Age range more realistic for competitive cyclists
     
-    # Height and weight based on specific data for men and women
-    if sex == 1:  # Male
-        height = random.randint(170, 190)
-        weight = round(random.uniform(60, 85), 1)
-        vo2_max = random.randint(65, 85)  # VO2 max for men
-        if weight <= 65:  # Climber
-            FTP = random.randint(320, 400)
-        elif weight <= 75:  # All-rounder
-            FTP = random.randint(370, 460)
-        else:  # Sprinter
-            FTP = random.randint(440, 500)
-    else:  # Female
-        height = random.randint(160, 175)
-        weight = round(random.uniform(50, 70), 1)
-        vo2_max = random.randint(55, 75)  # VO2 max for women
-        if weight <= 55:  # Climber
-            FTP = random.randint(250, 320)
-        elif weight <= 65:  # All-rounder
-            FTP = random.randint(290, 360)
-        else:  # Sprinter
-            FTP = random.randint(330, 380)
-
-    # Adjust FTP based on age, younger athletes will have a higher FTP
-    # Older athletes (around 35 years old) may see their FTP slightly decrease.
-    if age > 30:
-        FTP -= random.randint(10, 30)  # FTP penalty for older athletes
+    # Define cyclist type
+    cyclist_type = random.choices(["climber", "rouleur", "sprinter"], weights=[40, 40, 20])[0]
     
-    # Adding some other factors like VO2 max and height
-    FTP += (vo2_max - 60) * 2  # Adjust based on VO2 max (higher = better performance)
-    if height > 180:
-        FTP += 10  # A taller cyclist may have better muscle development
-
-    return (user_id, sex, first_name, last_name, age, height, weight, vo2_max, FTP)
-
+    # Height, weight, and VO2 max based on cyclist type and sex
+    if cyclist_type == "climber":
+        height = random.randint(165, 175) if sex == 1 else random.randint(155, 170)
+        weight = round(random.uniform(55, 65), 1) if sex == 1 else round(random.uniform(45, 55), 1)
+        vo2_max = random.randint(75, 90) if sex == 1 else random.randint(65, 85)
+    elif cyclist_type == "rouleur":
+        height = random.randint(175, 185) if sex == 1 else random.randint(165, 175)
+        weight = round(random.uniform(70, 80), 1) if sex == 1 else round(random.uniform(55, 65), 1)
+        vo2_max = random.randint(65, 80) if sex == 1 else random.randint(55, 75)
+    else:  # Sprinter
+        height = random.randint(180, 190) if sex == 1 else random.randint(170, 180)
+        weight = round(random.uniform(75, 85), 1) if sex == 1 else round(random.uniform(60, 70), 1)
+        vo2_max = random.randint(60, 75) if sex == 1 else random.randint(50, 65)
+    
+    return (user_id, sex, first_name, last_name, age, height, weight, vo2_max, cyclist_type)
 
 def insert_athletes():
     """Insert athletes corresponding to the cyclists"""
@@ -93,37 +72,49 @@ def insert_athletes():
     athletes = [generate_realistic_cyclist(user_id) for (user_id,) in cyclists]
     
     cursor.executemany("""
-        INSERT INTO athlete (user_id, sex, first_name, last_name, age, height, weight, VO2_max, FTP) 
+        INSERT INTO athlete (user_id, sex, first_name, last_name, age, height, weight, VO2_max, cyclist_type) 
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
     """, athletes)
     conn.commit()
     print("Information of 50 athletes inserted into the athlete table.")
 
-def generate_realistic_test(athlete_id, sex, FTP):
+def generate_realistic_test(athlete_id, sex, cyclist_type):
     """Generate a realistic test session for a given athlete"""
-    cadence = round(random.uniform(85, 110), 1) if sex == 1 else round(random.uniform(85, 105), 1)
-    power_output = round(FTP * random.uniform(0.8, 1.2), 1)  # Use a percentage of FTP for power
+    cadence_range = {
+        "climber": (90, 110),
+        "rouleur": (85, 100),
+        "sprinter": (80, 95)
+    }
+    ftp_range = {
+        "climber": (250, 350) if sex == 1 else (200, 300),
+        "rouleur": (300, 400) if sex == 1 else (250, 350),
+        "sprinter": (400, 500) if sex == 1 else (320, 400)
+    }
+    
+    cadence = round(random.uniform(*cadence_range[cyclist_type]), 1)
+    ftp = random.randint(*ftp_range[cyclist_type])
+    power_output = round(ftp * random.uniform(0.8, 1.2), 1)  # Use a percentage of FTP for power
     heart_rate = round(random.uniform(150, 200), 1) if sex == 1 else round(random.uniform(140, 190), 1)
     respiratory_frequency = round(random.uniform(30, 60), 1)
     vo2_measured = round(random.uniform(40, 90), 1)
     condition_rating = random.randint(1, 5)
 
-    return (athlete_id, fake.date_this_month(), cadence, power_output, heart_rate, respiratory_frequency, vo2_measured, condition_rating)
+    return (athlete_id, fake.date_this_month(), cadence, power_output, heart_rate, respiratory_frequency, vo2_measured, ftp, condition_rating)
 
 def insert_test_sessions():
-    """Insert 5 tests per athlete into the database"""
-    cursor.execute("SELECT user_id, sex, FTP FROM athlete")
+    """Insert 10 tests per athlete into the database"""
+    cursor.execute("SELECT user_id, sex, cyclist_type FROM athlete")
     athletes = cursor.fetchall()
     
     test_sessions = [
-        generate_realistic_test(user_id, sex, FTP)
-        for (user_id, sex, FTP) in athletes
+        generate_realistic_test(user_id, sex, cyclist_type)
+        for (user_id, sex, cyclist_type) in athletes
         for _ in range(10)
     ]
     
     cursor.executemany("""
-        INSERT INTO test_session (athlete_id, date, cadence, power_output, heart_rate, respiratory_frequency, VO2, condition_rating)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO test_session (athlete_id, date, cadence, power_output, heart_rate, respiratory_frequency, VO2, FTP, condition_rating)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
     """, test_sessions)
     conn.commit()
     print("Each athlete has 10 tests recorded in the test_session table.")
@@ -131,7 +122,6 @@ def insert_test_sessions():
 def update_users_with_athlete_info():
     """Update the user table with first name, last name, and email from the athlete table"""
     
-    # Retrieve athlete information (first name, last name, and user_id) from the `athlete` table
     cursor.execute("""
         SELECT athlete.user_id, athlete.first_name, athlete.last_name
         FROM athlete
@@ -139,27 +129,22 @@ def update_users_with_athlete_info():
     """)
     athletes = cursor.fetchall()
 
-    # Create an array with updated information for the `user` table
     updated_users = []
     for user_id, first_name, last_name in athletes:
         username = f"{first_name.capitalize()}{last_name.capitalize()}"
         email = f"{first_name.lower()}.{last_name.lower()}@gmail.com"
         
-        # Use `user_id` instead of `id`
         updated_users.append((username, email, user_id))
     
-    # Update the `user` table with this information
     cursor.executemany("""
         UPDATE user
         SET username = ? , email = ?
         WHERE id = ?
     """, updated_users)
     
-    # Apply the changes
     conn.commit()
     print("User table has been updated with information from the athlete table.")
     
-
 if __name__ == "__main__":
     if not os.path.exists("users.db"):
         create_db()
@@ -168,7 +153,6 @@ if __name__ == "__main__":
         insert_athletes()
         insert_test_sessions()
         update_users_with_athlete_info()
-
     else:
         print("The database already contains data. No insertion performed.")
     

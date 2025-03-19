@@ -30,7 +30,7 @@ def create_db():
             height INTEGER,
             weight REAL,
             VO2_max INT,
-            FTP INT,    
+            cyclist_type TEXT CHECK(cyclist_type IN ("climber", "rouleur", "sprinter")),
             FOREIGN KEY(user_id) REFERENCES user(id) ON DELETE CASCADE
         );""", 
         
@@ -43,6 +43,7 @@ def create_db():
             heart_rate REAL,
             respiratory_frequency REAL,
             VO2 REAL,
+            FTP REAL,
             condition_rating INT CHECK(condition_rating BETWEEN 1 AND 5),
             FOREIGN KEY(athlete_id) REFERENCES athlete(user_id) ON DELETE CASCADE
         );"""]
