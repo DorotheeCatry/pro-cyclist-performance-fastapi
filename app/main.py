@@ -1,6 +1,5 @@
 from fastapi import FastAPI
-from contextlib import asynccontextmanager
-from app.api.v1.endpoints import auth, users
+from app.api.v1.endpoints import auth, users, stats
 from app.db.db_utils import create_db
 from pathlib import Path
 
@@ -10,5 +9,6 @@ if not db.is_file():
 
 app = FastAPI(title="Athlete Performance API")
 
-app.include_router(auth.router, prefix="/api/v1", tags=["auth"])
-app.include_router(users.router, prefix="/api/v1", tags=["users"])
+app.include_router(auth.router, prefix="/api/v1/auth", tags=["auth"])
+app.include_router(users.router, prefix="/api/v1/users", tags=["users"])
+app.include_router(stats.router, prefix="/api/v1/stats", tags=["stats"])

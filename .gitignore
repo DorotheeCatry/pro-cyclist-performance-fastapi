@@ -1,5 +1,10 @@
+# ENV
+.env
+
 # BDD
 .db
+users.db
+app/db/users.db
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -175,6 +180,3 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
-
-*.db
-users.db
