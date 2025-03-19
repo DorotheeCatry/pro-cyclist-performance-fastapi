@@ -11,7 +11,6 @@ from app.utils.jwt_handler import verify_token
 
 router = APIRouter()
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/login")
 
 @router.post("/users/create")
 def api_create_user(data: dict):
