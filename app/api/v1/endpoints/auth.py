@@ -49,7 +49,7 @@ def register(username: str, email: str, password: str, role: str):
     
     return response
 
-
+# LOGIN USER
 @router.post("/login/")
 def login(email: str, password: str):
     """
