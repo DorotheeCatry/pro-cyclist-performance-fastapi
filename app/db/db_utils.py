@@ -11,7 +11,7 @@ def create_db():
     conn = get_db_connection()  # Connexion à la base de données
     cursor = conn.cursor()      # Création d'un curseur
 
-    requetes = [
+    queries = [
         """CREATE TABLE IF NOT EXISTS user (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             username TEXT UNIQUE,
@@ -47,8 +47,8 @@ def create_db():
             FOREIGN KEY(athlete_id) REFERENCES athlete(user_id) ON DELETE CASCADE
         );"""]
 
-    for requete in requetes:
-        cursor.execute(requete) # exécution de la requête avec les valeurs à insérer
+    for query in queries:
+        cursor.execute(query) # exécution de la requête avec les valeurs à insérer
 
     conn.commit() # Valide la transaction : utile pour les INSERT, UPDATE, DELETE
     conn.close() # Fermeture de la connexionCRETAE TABLE IF NO EXISTS

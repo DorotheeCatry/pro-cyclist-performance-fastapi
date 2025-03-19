@@ -7,7 +7,22 @@ db = Path("/app/db/users.db")
 if not db.is_file():
     create_db()
 
-app = FastAPI(title="Athlete Performance API")
+app = FastAPI(
+    title="Pro Cyclist Performance API",
+    description="""
+    Welcome to the Pro Cyclist Performance API! 🚴
+    
+    This API allows you to manage users, track athlete statistics, and analyze performance data.
+    Use the endpoints to create accounts, modify athlete information, log training sessions,
+    and retrieve key performance insights.
+    
+    Features:
+    - Secure authentication with JWT
+    - Athlete performance tracking
+    - Advanced statistics (VO2max, power-to-weight ratio)
+    
+    📌 Explore the interactive documentation at `/docs` or `/redoc`.
+    """)
 
 app.include_router(auth.router, prefix="/api/v1/auth", tags=["auth"])
 app.include_router(users.router, prefix="/api/v1/users", tags=["users"])

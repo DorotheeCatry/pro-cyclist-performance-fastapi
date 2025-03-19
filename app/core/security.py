@@ -4,16 +4,17 @@ from fastapi import Security, HTTPException
 from app.utils.jwt_handler import verify_token
 from app.db.db_utils import get_db_connection
 
+# Initialize the password context with bcrypt algorithm
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+# Define the OAuth2 scheme for token-based authentication
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/login")
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     return pwd_context.verify(plain_password, hashed_password)
 
 def get_password_hash(password: str) -> str:
     return pwd_context.hash(password)
-
-
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/login/")
 
 def get_current_user(token: str = Security(oauth2_scheme)) -> dict:
     """

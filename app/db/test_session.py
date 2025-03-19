@@ -9,10 +9,10 @@ def create_session(athlete_id: int, data: dict) -> dict:
 
     try:
         # Create a new user based on the front-end data.
-        requete = """INSERT INTO test_session (athlete_id, cadence, power_output, heart_rate, respiratory_frequency, VO2, condition_rating)
+        query = """INSERT INTO test_session (athlete_id, cadence, power_output, heart_rate, respiratory_frequency, VO2, condition_rating)
         VALUES (?, ?, ?, ?, ?, ?, ?);""" # Requête SQL à executer
 
-        cursor.execute(requete, (athlete_id, data["cadence"], data["power_output"], data["heart_rate"], data["respiratory_frequency"], \
+        cursor.execute(query, (athlete_id, data["cadence"], data["power_output"], data["heart_rate"], data["respiratory_frequency"], \
             data["VO2"], data["condition_rating"])) # exécution de la requête avec les valeurs à insérer
         
         conn.commit() # Valide la transaction : utile pour les INSERT, UPDATE, DELETE
