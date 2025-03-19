@@ -1,5 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer
+from fastapi import APIRouter, Depends
 from app.db.db_utils import get_db_connection
 from app.db.athlete import modify_athlete
 from app.db.selects import get_athlete_by_id

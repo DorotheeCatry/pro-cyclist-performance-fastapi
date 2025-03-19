@@ -8,8 +8,8 @@ def get_db_connection():
 
 def create_db():    
 
-    conn = get_db_connection()  # Connexion à la base de données
-    cursor = conn.cursor()      # Création d'un curseur
+    conn = get_db_connection()  # Connect to the database
+    cursor = conn.cursor()      # Create a cursor
 
     queries = [
         """CREATE TABLE IF NOT EXISTS user (
@@ -18,7 +18,7 @@ def create_db():
             password TEXT,
             email TEXT UNIQUE,
             subscription_date DATE DEFAULT (DATE('now')),
-            role INTEGER CHECK(role IN (0, 1))
+            role INTEGER CHECK(role IN (0, 1)) 
         );""", 
         
         """CREATE TABLE IF NOT EXISTS athlete (
@@ -48,10 +48,10 @@ def create_db():
         );"""]
 
     for query in queries:
-        cursor.execute(query) # exécution de la requête avec les valeurs à insérer
+        cursor.execute(query) # Execute the query with the values to insert
 
-    conn.commit() # Valide la transaction : utile pour les INSERT, UPDATE, DELETE
-    conn.close() # Fermeture de la connexionCRETAE TABLE IF NO EXISTS
+    conn.commit() # Commit the transaction: useful for INSERT, UPDATE, DELETE
+    conn.close() # Close the connection
     
 if __name__ == "__main__":
     create_db()
