@@ -1,5 +1,32 @@
 from app.db.db_utils import get_db_connection
 
+def create_athlete(user_id: int) -> dict:
+    
+    result = {"status" : False, "message" : ""}
+    
+    conn = get_db_connection()
+    cursor = conn.cursor() # Création d'un curseur
+
+    try:
+                
+        requete = """INSERT INTO athlete (user_id, sex, first_name, last_name, age, height, weight, VO2_max, FTP) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);""" # Requête SQL à executer
+
+        cursor.execute(requete, (user_id, 0, "John/Jane", "Doe", 18, 160, 60, 0, 0)) # exécution de la requête avec les valeurs à insérer
+        
+        conn.commit() # Valide la transaction : utile pour les INSERT, UPDATE, DELETE
+        
+        result["status"] = True
+        result["message"] = f"Athlete n°{user_id} successfully created!"
+        
+    except ValueError as e:
+        result["message"] = "Error during the creation of new athlete : " + str(e)
+    except Exception as e:
+        result["message"] = "Error during the creation of new athlete : " + str(e)
+    finally:
+        conn.close() # Fermeture de la connexion
+        
+    return result
+
 def modify_athlete(id: int, data: dict) -> dict:
     
     result = {"status" : False, "message" : ""}
@@ -41,7 +68,19 @@ def modify_athlete(id: int, data: dict) -> dict:
     return result
 
 if __name__ == "__main__":
-    # data = {"sex": 0,
+    # data = {"username": "",
+    #         "password": "",
+    #         "email": "",
+    #         "role": 0}
+    
+    data = {"username": "Destructor",
+            "password": "supersecretpassword",
+            "email": "mail@mail.fr",
+            "role": 0}
+    
+    print(create_athlete(data)["message"])
+    
+        # data = {"sex": 0,
     #         "first_name": "",
     #         "last_name": "",
     #         "age": 0,
