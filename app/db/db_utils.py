@@ -18,7 +18,7 @@ def create_db():
             password TEXT,
             email TEXT UNIQUE,
             subscription_date DATE DEFAULT (DATE('now')),
-            role INTEGER
+            role INTEGER CHECK(role IN (0, 1))
         );""", 
         
         """CREATE TABLE IF NOT EXISTS athlete (

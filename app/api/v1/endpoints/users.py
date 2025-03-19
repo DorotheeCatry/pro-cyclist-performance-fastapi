@@ -1,14 +1,10 @@
-from fastapi import APIRouter
-from app.db.athlete import create_athlete
+from fastapi import APIRouter, Depends
+from app.db.db_utils import get_db_connection
 from app.db.athlete import modify_athlete
 from app.db.test_session import create_session
+from app.core.security import get_current_user
 
 router = APIRouter()
-
-@router.post("/create")
-def api_create_user(data: dict):
-    result = create_athlete(data)
-    return result["message"]
 
 @router.post("/modify_athlete")
 def api_modify_ahtlete(id: int, data: dict):
@@ -19,4 +15,19 @@ def api_modify_ahtlete(id: int, data: dict):
 def api_create_session(athlete_id: int, data: dict):
     result = create_session(athlete_id, data)
     return result["message"]
+
+@router.post("/delete_account")
+def delete_account(current_user: dict = Depends(get_current_user)):
+    """
+    Delete a user account by user ID.
+    """
+    user_id = current_user["id"]
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    
+    query = """DELETE FROM user WHERE user_id = ?"""
+    
+    cursor.execute(query, (user_id,))
+    conn.commit()
+    return {"message": "Your account has been successfully deleted."}
 

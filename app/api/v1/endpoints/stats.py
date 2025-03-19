@@ -85,7 +85,7 @@ def get_best_VO2max():
     return None
 
 # Endpoint to get the athlete with the best power-to-weight ratio
-@router.get("/best_power_to_weight")
+@router.get("/get_best_power_to_weight")
 def get_best_power_to_weight():
     """
     Retrieve the athlete with the best power-to-weight ratio.
