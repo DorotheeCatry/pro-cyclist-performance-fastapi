@@ -8,7 +8,7 @@ from app.utils.jwt_handler import create_access_token
 router = APIRouter()
 
 # REGISTER USER
-@router.post("/register/")
+@router.post("/register")
 def register(username: str, email: str, password: str, role: str):
     """
     Register a new user in the database.
@@ -50,7 +50,7 @@ def register(username: str, email: str, password: str, role: str):
     return response
 
 # LOGIN USER
-@router.post("/login/")
+@router.post("/login")
 def login(email: str, password: str):
     """
     Authenticate a user and generate a JWT token.

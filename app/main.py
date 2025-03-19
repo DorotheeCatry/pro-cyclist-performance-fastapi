@@ -9,6 +9,6 @@ if not db.is_file():
 
 app = FastAPI(title="Athlete Performance API")
 
-app.include_router(auth.router, prefix="/api/v1", tags=["auth"])
-app.include_router(users.router, prefix="/api/v1", tags=["users"])
-app.include_router(stats.router, prefix="/api/v1", tags=["stats"])
+app.include_router(auth.router, prefix="/api/v1/auth", tags=["auth"])
+app.include_router(users.router, prefix="/api/v1/users", tags=["users"])
+app.include_router(stats.router, prefix="/api/v1/stats", tags=["stats"])
