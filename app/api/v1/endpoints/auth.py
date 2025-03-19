@@ -1,6 +1,7 @@
 from fastapi import APIRouter, HTTPException
 import sqlite3
 from app.db.db_utils import get_db_connection
+from app.db.athlete import create_athlete
 from app.core.security import get_password_hash, verify_password
 from app.utils.jwt_handler import create_access_token
 
@@ -24,7 +25,9 @@ def register(username: str, email: str, password: str, role: str):
     hashed_password = get_password_hash(password)
     conn = get_db_connection()
     cursor = conn.cursor()
-
+    successfully_created = False
+    response = {}
+    
     try:
         cursor.execute(
             """INSERT INTO user (username, email, password, role) VALUES (?, ?, ?, ?) RETURNING id""",
@@ -33,15 +36,20 @@ def register(username: str, email: str, password: str, role: str):
         user_id = cursor.fetchone()["id"]
         
         conn.commit()
+        successfully_created = True
+        
     except sqlite3.IntegrityError:
         raise HTTPException(status_code=400, detail="Username or email already exists")
     finally:
         conn.close()
 
-    return {"id": user_id, "username": username, "email": email, "role": role}
+    if successfully_created:
+        response["user"] = {"id": user_id, "username": username, "email": email, "role": role}
+        response["athlete"] = create_athlete(user_id)["message"]
+    
+    return response
 
 
-#
 @router.post("/login/")
 def login(email: str, password: str):
     """
