@@ -5,8 +5,8 @@ def get_athlete_sessions(athlete_id: int):
     conn = get_db_connection()
     cursor = conn.cursor() # Création d'un curseur
     
-    requete = "SELECT * FROM test_session WHERE athlete_id = ?"
-    cursor.execute(requete, (athlete_id, ))
+    query = "SELECT * FROM test_session WHERE athlete_id = ?"
+    cursor.execute(query, (athlete_id, ))
     
     results = [dict(row) for row in cursor.fetchall()]
     

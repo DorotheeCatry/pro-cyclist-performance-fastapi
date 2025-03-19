@@ -9,9 +9,9 @@ def create_athlete(user_id: int) -> dict:
 
     try:
                 
-        requete = """INSERT INTO athlete (user_id, sex, first_name, last_name, age, height, weight, VO2_max, FTP) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);""" # Requête SQL à executer
+        query = """INSERT INTO athlete (user_id, sex, first_name, last_name, age, height, weight, VO2_max, FTP) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);""" # Requête SQL à executer
 
-        cursor.execute(requete, (user_id, 0, "John/Jane", "Doe", 18, 160, 60, 0, 0)) # exécution de la requête avec les valeurs à insérer
+        cursor.execute(query, (user_id, 0, "John/Jane", "Doe", 18, 160, 60, 0, 0)) # exécution de la requête avec les valeurs à insérer
         
         conn.commit() # Valide la transaction : utile pour les INSERT, UPDATE, DELETE
         
@@ -35,7 +35,7 @@ def modify_athlete(id: int, data: dict) -> dict:
     cursor = conn.cursor() # Création d'un curseur
 
     try:        
-        requete = """UPDATE athlete SET
+        query = """UPDATE athlete SET
         sex = ?, 
         first_name = ?,
         last_name = ?, 
@@ -46,11 +46,11 @@ def modify_athlete(id: int, data: dict) -> dict:
         FTP = ?
         WHERE user_id = ?;""" # Requête SQL à executer
 
-        cursor.execute(requete, (data["sex"], data["first_name"], data["last_name"], data["age"], data["height"],data["weight"],\
+        cursor.execute(query, (data["sex"], data["first_name"], data["last_name"], data["age"], data["height"],data["weight"],\
             data["VO2_max"], data["FTP"], id)) # exécution de la requête avec les valeurs à insérer
 
-        requete = """SELECT username FROM user WHERE id = ?"""
-        cursor.execute(requete, (id, ))
+        query = """SELECT username FROM user WHERE id = ?"""
+        cursor.execute(query, (id, ))
         username = cursor.fetchone()["username"]
         
         conn.commit() # Valide la transaction : utile pour les INSERT, UPDATE, DELETE
