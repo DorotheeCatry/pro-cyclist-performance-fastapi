@@ -3,7 +3,7 @@ from app.db.db_utils import get_db_connection
 def get_athlete_sessions(athlete_id: int):
     
     conn = get_db_connection()
-    cursor = conn.cursor() # Création d'un curseur
+    cursor = conn.cursor()
     
     query = "SELECT * FROM test_session WHERE athlete_id = ?"
     cursor.execute(query, (athlete_id, ))
@@ -17,7 +17,7 @@ def get_athlete_sessions(athlete_id: int):
 def get_athlete_by_id(athlete_id: int):
     
     conn = get_db_connection()
-    cursor = conn.cursor() # Création d'un curseur
+    cursor = conn.cursor()
     
     requete = "SELECT * FROM athlete WHERE user_id = ?"
     cursor.execute(requete, (athlete_id, ))

@@ -24,7 +24,7 @@ app = FastAPI(
     📌 Explore the interactive documentation at `/docs` or `/redoc`.
     """)
 
-@app.get("/", tags=["Welcome"])
+@app.get("/", tags=["Welcome"], include_in_schema=False)
 def read_root():
     """Returns API description on the home page."""
     return {
