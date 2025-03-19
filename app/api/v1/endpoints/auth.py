@@ -79,4 +79,4 @@ def login(email: str, password: str):
     # JWT Creation
     access_token = create_access_token(data={"sub": user["id"], "username": user["username"], "role": user["role"]})
 
-    return {"access_token": access_token, "token_type": "bearer"}
+    return {"access_token": access_token, "token_type": "bearer", "user": {"username": user["username"], "role": user["role"], "id": user["id"]}}
