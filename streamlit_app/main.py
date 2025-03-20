@@ -3,7 +3,7 @@ import requests
 from dotenv import load_dotenv
 import os
 from enums import States
-from streamlit_functions import display_sidebar
+from streamlit_functions import display_sidebar, fetch_athletes_list, select_athlete_callback
 import pandas as pd
 
 # region INIT
@@ -20,6 +20,10 @@ if "init" not in st.session_state:
     st.session_state.current_user = {}
     st.session_state.popup_message = ""
     st.session_state.headers = ""
+    st.session_state.athlete_list = []
+    st.session_state.current_selected_athlete = ""
+    
+    st.session_state.force_callback_on_first_dashboard_render = True
 
 
 # region COMMON UI
@@ -51,6 +55,9 @@ match st.session_state.state:
                     st.session_state.headers = {
                 "Authorization": f"Bearer {st.session_state.token}"
                 }
+                    if response["user"]["role"] == 0:
+                        fetch_athletes_list()
+                        
                     st.rerun()
                 except Exception as e:
                     st.error(str(e))
@@ -163,7 +170,30 @@ match st.session_state.state:
                 else:
                     st.error(response["message"])
             
-
+    case States.DASHBOARD_COACH:
+        
+        st.selectbox("Select an athlete : ", list(enumerate([(x["first_name"]+" "+x["last_name"]) for x in st.session_state.athlete_list])), \
+            format_func=lambda option: option[1], key="athlete_index", on_change=select_athlete_callback)
+        
+        if  st.session_state.force_callback_on_first_dashboard_render:
+            select_athlete_callback()
+            st.session_state.force_callback_on_first_dashboard_render = False
+        
+        st.title(st.session_state.current_selected_athlete["first_name"]+ " " +st.session_state.current_selected_athlete["last_name"])
+        
+        sessions = requests.get(st.session_state.api_url_users+"get_sessions_coach/", params={"athlete_id": st.session_state.current_selected_athlete["user_id"]}, headers=st.session_state.headers).json()
+        
+        fields = ["id", "DATE", 'CADENCE', 'PO', 'HR', 'RF', "VO2", "FTP", "Rating"]
+        working_fields=['CADENCE', 'PO', 'HR', 'RF', "VO2", "FTP"]
+        
+        sessions = pd.DataFrame(sessions)
+        sessions.drop("athlete_id", axis=1, inplace=True)
+        sessions.columns = fields    
+        format_dict = {col: '{:.1f}' for col in sessions.select_dtypes(include=['number']).columns if col != 'id'}
+        format_dict['id'] = '{:.0f}'
+        sessions_styled = sessions.style.highlight_max(subset=working_fields, color="green").highlight_min(subset=working_fields, color="red").format(format_dict)
+        st.write(sessions_styled)
+        
         
                 
             

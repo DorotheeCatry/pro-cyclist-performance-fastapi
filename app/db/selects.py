@@ -20,9 +20,27 @@ def get_athlete_by_id(athlete_id: int):
     conn = get_db_connection()
     cursor = conn.cursor()
     
-    requete = "SELECT * FROM athlete WHERE user_id = ?"
-    cursor.execute(requete, (athlete_id, ))
+    request = "SELECT * FROM athlete WHERE user_id = ?"
+    cursor.execute(request, (athlete_id, ))
     results = dict(cursor.fetchone())
+    
+    conn.close()
+    
+    return results
+
+def get_athlete_list():
+    
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    
+    request = """SELECT user_id, first_name, last_name 
+    FROM user
+    LEFT JOIN athlete
+    ON id = user_id
+    WHERE role = 1"""
+    cursor.execute(request)
+    results = cursor.fetchall()
+    print(results)
     
     conn.close()
     

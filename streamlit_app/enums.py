@@ -8,4 +8,5 @@ class States(Enum):
     ATHLETE_INFO=3,
     ACCOUNT=4,
     SESSIONS=5,
-    SESSION_ADD=6
+    SESSION_ADD=6,
+    DASHBOARD_COACH=7

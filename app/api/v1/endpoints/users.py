@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 from app.db.db_utils import get_db_connection
 from app.db.athlete import modify_athlete
-from app.db.selects import get_athlete_by_id, get_athlete_sessions
+from app.db.selects import get_athlete_by_id, get_athlete_sessions, get_athlete_list
 from app.db.test_session import create_session
 from app.core.security import get_current_user
 
@@ -25,6 +25,16 @@ def api_get_athlete_by_id(athlete_id: int):
 @router.get("/get_sessions")
 def api_get_session(current_user: dict= Depends(get_current_user)):
     result = get_athlete_sessions(current_user["id"])
+    return result
+
+@router.get("/get_sessions_coach")
+def api_get_session(athlete_id: int, current_user: dict= Depends(get_current_user)):
+    result = get_athlete_sessions(athlete_id)
+    return result
+
+@router.get("/get_athlete_list")
+def api_get_athlete_list(current_user: dict= Depends(get_current_user)):
+    result = get_athlete_list()
     return result
 
 @router.get("/delete_account")

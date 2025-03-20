@@ -33,6 +33,7 @@ def register(data: RegisterData):
     Raises:
         HTTPException: If the username or email already exists in the database.
     """
+    
     hashed_password = get_password_hash(data["password"])
     conn = get_db_connection()
     cursor = conn.cursor()
