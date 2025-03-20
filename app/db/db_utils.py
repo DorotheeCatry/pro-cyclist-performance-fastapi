@@ -45,7 +45,7 @@ def create_db():
             VO2 REAL,
             FTP REAL,
             condition_rating INT CHECK(condition_rating BETWEEN 1 AND 5),
-            FOREIGN KEY(athlete_id) REFERENCES athlete(user_id) ON DELETE CASCADE
+            FOREIGN KEY(athlete_id) REFERENCES user(id) ON DELETE CASCADE
         );"""]
 
     for query in queries:

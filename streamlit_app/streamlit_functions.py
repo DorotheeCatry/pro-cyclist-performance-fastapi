@@ -36,9 +36,21 @@ def display_sidebar() -> None:
                 st.session_state.state = States.HOME
                 st.rerun()
             
-            if st.button("Info"):
-                st.session_state.state = States.ATHLETE_INFO
+            if st.button("Account"):
+                st.session_state.state = States.ACCOUNT
                 st.rerun()
+            
+            if st.session_state.current_user["role"] == 1:                
+                if st.button("My infos"):
+                    st.session_state.state = States.ATHLETE_INFO
+                    st.rerun()
+            
+            if st.session_state.current_user["role"] == 1:
+                if st.button("My sessions"):
+                    st.session_state.state = States.SESSIONS
+                    st.rerun()
+                
+        
             
        
 

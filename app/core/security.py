@@ -26,8 +26,13 @@ def get_current_user(token: str = Security(oauth2_scheme)) -> dict:
     Raises:
         HTTPException: If the token is invalid or expired.
     """
+    
+    print("DEBUG : ", token)
+    
     payload = verify_token(token)
 
+    print("DEBUG : ", payload)
+    
     user_id: int = payload.get("sub")
 
     if user_id is None:

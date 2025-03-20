@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 import os
 from enums import States
 from streamlit_functions import display_sidebar
+import pandas as pd
 
 # region INIT
 if "init" not in st.session_state:
@@ -18,6 +19,7 @@ if "init" not in st.session_state:
     st.session_state.login = False
     st.session_state.current_user = {}
     st.session_state.popup_message = ""
+    st.session_state.headers = ""
 
 
 # region COMMON UI
@@ -30,7 +32,8 @@ if st.session_state.popup_message != "":
 match st.session_state.state:
     # region HOMEPAGE
     case States.HOME:
-        st.write("Home page")
+        st.title(":green[PRO CYCLING TEAM]")
+        st.image("streamlit_app/images/home.jpeg", caption="Ultimate datas, ultimate performances!")
 
     # region LOGIN
     case States.LOGIN:
@@ -39,12 +42,15 @@ match st.session_state.state:
             password_login = st.text_input("Password :", type="password")
             if st.form_submit_button("Login"):
                 data = {"email" : email_login, "password": password_login}
-                response = requests.post(st.session_state.api_url_auth+"login/", params=data).json()
+                response = requests.post(st.session_state.api_url_auth+"login/", json=data).json()
                 try:
                     st.session_state.token = response["access_token"]
                     st.session_state.current_user = response["user"]
                     st.session_state.login = True
                     st.session_state.state = States.HOME
+                    st.session_state.headers = {
+                "Authorization": f"Bearer {st.session_state.token}"
+                }
                     st.rerun()
                 except Exception as e:
                     st.error(str(e))
@@ -60,8 +66,8 @@ match st.session_state.state:
                 if password_register != password_verification_register:
                     st.error("Password does not match verification.")    
                 else:
-                    data = {"username": username_register, "email": email_register, "password": password_register, "role": 0}
-                    response = requests.post(st.session_state.api_url_auth+"register/", params = data).json()
+                    data = {"username": username_register, "email": email_register, "password": password_register, "role": 1}
+                    response = requests.post(st.session_state.api_url_auth+"register/", json = data).json()
                     if response["status"] == 0:
                         st.error(response["message"])
                     else:
@@ -85,18 +91,51 @@ match st.session_state.state:
                 sex = 0 if sex_info == "Female" else 1
                 data = {"sex": sex, "first_name": first_name_info, "last_name": last_name_info, "age": age_info, "height": height_info, \
                     "weight": weight_info, "VO2_max": vo2_max_info}
-                response = requests.post(st.session_state.api_url_users+"modify_athlete", params={"id":st.session_state.current_user["id"]}, json=data).json()
+                response = requests.post(st.session_state.api_url_users+"modify_athlete", \
+                    params={"id":st.session_state.current_user["id"]}, json=data, headers=st.session_state.headers).json()
                 if response["status"]:
                     st.session_state.popup_message = response["message"]
                     st.session_state.state = States.HOME
                     st.rerun()
                 else:
                     st.error(response["message"])
-                
-
-                
-                            
+    
+    # region ACCOUNT
+    case States.ACCOUNT:
+        if st.button("Delete account"):
+            try:
+                response = requests.get(st.session_state.api_url_users+"delete_account", headers=st.session_state.headers).json()
+                st.session_state.popup_message = response["message"]
+                st.session_state.current_user = {}
+                st.session_state.login = False
+                st.session_state.token = ""
+                st.session_state.state = States.HOME
+                st.rerun()
+            except Exception as e:
+                st.error(str(e))
             
+    # region SESSIONS
+    case States.SESSIONS:
         
+        st.title("MY SESSIONS")
+        
+        sessions = requests.get(st.session_state.api_url_users+"get_sessions/", headers=st.session_state.headers).json()
+        
+        fields = ["id", "DATE", 'CADENCE', 'PO', 'HR', 'RF', "VO2", "FTP", "Rating"]
+        working_fields=['CADENCE', 'PO', 'HR', 'RF', "VO2", "FTP"]
+        
+        sessions = pd.DataFrame(sessions)
+        sessions.drop("athlete_id", axis=1, inplace=True)
+        sessions.columns = fields        
+        format_dict = {col: '{:.1f}' for col in sessions.select_dtypes(include=['number']).columns}
+        sessions_styled = sessions.style.highlight_max(subset=working_fields, color="green").highlight_min(subset=working_fields, color="red").format(format_dict)
+        st.write(sessions_styled)
+        
+ 
+            
+
+        
+                
+            
 
 

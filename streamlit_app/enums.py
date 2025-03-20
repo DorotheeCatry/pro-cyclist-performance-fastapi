@@ -5,4 +5,6 @@ class States(Enum):
     HOME = 0,
     LOGIN = 1,
     REGISTER=2,
-    ATHLETE_INFO=3
+    ATHLETE_INFO=3,
+    ACCOUNT=4,
+    SESSIONS=5
