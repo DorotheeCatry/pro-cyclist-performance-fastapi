@@ -126,12 +126,42 @@ match st.session_state.state:
         
         sessions = pd.DataFrame(sessions)
         sessions.drop("athlete_id", axis=1, inplace=True)
-        sessions.columns = fields        
-        format_dict = {col: '{:.1f}' for col in sessions.select_dtypes(include=['number']).columns}
+        sessions.columns = fields    
+        format_dict = {col: '{:.1f}' for col in sessions.select_dtypes(include=['number']).columns if col != 'id'}
+        format_dict['id'] = '{:.0f}'
         sessions_styled = sessions.style.highlight_max(subset=working_fields, color="green").highlight_min(subset=working_fields, color="red").format(format_dict)
         st.write(sessions_styled)
         
- 
+        if st.button("Add new session"):
+            st.session_state.state = States.SESSION_ADD
+            st.rerun()
+            
+    case States.SESSION_ADD:
+        
+        with st.form("session_add_form"):
+            st.title("New training session :")
+            cadence_session = st.number_input("Cadence :", min_value=0.0, step=0.1)
+            power_output_session = st.number_input("Power Output :", min_value=0.0, step=0.1)
+            heart_rate_session = st.number_input("Heart Rate :", min_value=0.0, step=0.1)
+            respiratory_frequency_session = st.number_input("Respiratory Frequency :", min_value=0.0, step=0.1)
+            vo2_session = st.number_input("VO2", min_value=0.0, step=0.1)
+            FTP_session = st.number_input("FTP", min_value=0.0, step=0.1)
+            condition_rating_session = st.number_input("Condition Rating :", min_value=1, max_value=5, step=1)
+            
+            if st.form_submit_button("Submit"):
+                data = {"cadence": cadence_session, "power_output": power_output_session, \
+                    "heart_rate": heart_rate_session, "respiratory_frequency": respiratory_frequency_session, "VO2":vo2_session, \
+                        "FTP": FTP_session, "condition_rating": condition_rating_session}
+                
+                response = requests.post(st.session_state.api_url_users+"create_session/", \
+                    params={"athlete_id": st.session_state.current_user["id"]}, json=data, headers=st.session_state.headers).json()
+
+                if response["status"]:
+                    st.session_state.popup_message = response["message"]
+                    st.session_state.state=States.SESSIONS
+                    st.rerun()
+                else:
+                    st.error(response["message"])
             
 
         

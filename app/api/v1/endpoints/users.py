@@ -13,7 +13,7 @@ def api_modify_ahtlete(id: int, data: dict, current_user: dict= Depends(get_curr
     return result
 
 @router.post("/create_session")
-def api_create_session(athlete_id: int, data: dict):
+def api_create_session(athlete_id: int, data: dict, current_user: dict=Depends(get_current_user)):
     result = create_session(athlete_id, data)
     return result
 

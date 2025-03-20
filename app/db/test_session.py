@@ -9,11 +9,11 @@ def create_session(athlete_id: int, data: dict) -> dict:
 
     try:
         # Create a new user based on the front-end data.
-        query = """INSERT INTO test_session (athlete_id, cadence, power_output, heart_rate, respiratory_frequency, VO2, condition_rating)
-        VALUES (?, ?, ?, ?, ?, ?, ?);""" # Requête SQL à executer
+        query = """INSERT INTO test_session (athlete_id, cadence, power_output, heart_rate, respiratory_frequency, VO2, FTP, condition_rating)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?);""" # Requête SQL à executer
 
         cursor.execute(query, (athlete_id, data["cadence"], data["power_output"], data["heart_rate"], data["respiratory_frequency"], \
-            data["VO2"], data["condition_rating"])) # exécution de la requête avec les valeurs à insérer
+            data["VO2"], data["FTP"], data["condition_rating"])) # exécution de la requête avec les valeurs à insérer
         
         conn.commit() # Valide la transaction : utile pour les INSERT, UPDATE, DELETE
         new_id = cursor.lastrowid
@@ -22,9 +22,9 @@ def create_session(athlete_id: int, data: dict) -> dict:
         result["message"] = f"Session #{new_id} successfully created!"
         
     except ValueError as e:
-        result["message"] = "Error during the creation of new user : " + str(e)
+        result["message"] = "Error during the creation of new session : " + str(e)
     except Exception as e:
-        result["message"] = "Error during the creation of new user : " + str(e)
+        result["message"] = "Error during the creation of new session : " + str(e)
     finally:
         conn.close() # Fermeture de la connexion
     

@@ -7,4 +7,5 @@ class States(Enum):
     REGISTER=2,
     ATHLETE_INFO=3,
     ACCOUNT=4,
-    SESSIONS=5
+    SESSIONS=5,
+    SESSION_ADD=6
