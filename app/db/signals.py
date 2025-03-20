@@ -27,7 +27,9 @@ def generate_user(role):
 
 def insert_users():
     """Insert 50 cyclists and 2 coaches into the database"""
-    users = [generate_user(0) for _ in range(2)]  # 2 coaches
+    users = [["AntoineM", get_password_hash("Password123"), "antoinem@coach.fr", 0], 
+            ["JeremyV", get_password_hash("Password123"), "jeremyv@coach.fr", 0]]       # 2 coaches
+    
     users += [generate_user(1) for _ in range(50)]  # 50 cyclists
     
     cursor.executemany("""
