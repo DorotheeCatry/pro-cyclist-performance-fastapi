@@ -42,12 +42,11 @@ def modify_athlete(id: int, data: dict) -> dict:
         age = ?, 
         height = ?, 
         weight = ?, 
-        VO2_max = ?, 
-        FTP = ?
+        VO2_max = ? 
         WHERE user_id = ?;""" # Requête SQL à executer
 
         cursor.execute(query, (data["sex"], data["first_name"], data["last_name"], data["age"], data["height"],data["weight"],\
-            data["VO2_max"], data["FTP"], id)) # exécution de la requête avec les valeurs à insérer
+            data["VO2_max"], id)) # exécution de la requête avec les valeurs à insérer
 
         query = """SELECT username FROM user WHERE id = ?"""
         cursor.execute(query, (id, ))
@@ -59,9 +58,9 @@ def modify_athlete(id: int, data: dict) -> dict:
         result["message"] = f"User {username} successfully updated!"
         
     except ValueError as e:
-        result["message"] = "Error during the creation of new user : " + str(e)
+        result["message"] = "Value error during the modification of user infos : " + str(e)
     except Exception as e:
-        result["message"] = "Error during the creation of new user : " + str(e)
+        result["message"] = "Exception error during the modification of user infos : " + str(e)
     finally:
         conn.close() # Fermeture de la connexion
     

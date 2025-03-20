@@ -8,8 +8,12 @@ def display_sidebar() -> None:
     """
     
     with st.sidebar:
-          
-        # st.divider()
+        
+        if st.button("Home"):
+            st.session_state.state = States.HOME
+            st.rerun()  
+        
+        st.divider()
         
         if not st.session_state.login:            
             col1, col2 = st.columns(2)
@@ -30,6 +34,10 @@ def display_sidebar() -> None:
                 st.session_state.login = False
                 st.session_state.token = ""
                 st.session_state.state = States.HOME
+                st.rerun()
+            
+            if st.button("Info"):
+                st.session_state.state = States.ATHLETE_INFO
                 st.rerun()
             
        

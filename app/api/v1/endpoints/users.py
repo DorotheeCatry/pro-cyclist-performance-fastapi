@@ -10,7 +10,7 @@ router = APIRouter()
 @router.post("/modify_athlete")
 def api_modify_ahtlete(id: int, data: dict):
     result = modify_athlete(id, data)
-    return result["message"]
+    return result
 
 @router.post("/create_session")
 def api_create_session(athlete_id: int, data: dict):

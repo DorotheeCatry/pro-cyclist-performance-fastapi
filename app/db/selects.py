@@ -14,15 +14,15 @@ def get_athlete_sessions(athlete_id: int):
     
     return results
 
+
 def get_athlete_by_id(athlete_id: int):
-    
+        
     conn = get_db_connection()
     cursor = conn.cursor()
     
     requete = "SELECT * FROM athlete WHERE user_id = ?"
     cursor.execute(requete, (athlete_id, ))
-    
-    results = [dict(row) for row in cursor.fetchall()]
+    results = dict(cursor.fetchone())
     
     conn.close()
     
