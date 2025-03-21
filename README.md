@@ -55,6 +55,7 @@ PRO-CYCLIST-PERFORMANCE-API/
 │   │   │-- selects.py                        # Query functions
 │   │   │-- test_session.py                   # Database test session
 │   │   │-- users.db                          # SQLite database file
+|   |   |-- signals.py                        # Create a fake DB for testing purposes
 │   │-- utils/                                # Utility functions
 │   │-- main.py                               # FastAPI entry point
 │-- streamlit_app/                            # Streamlit application folder
@@ -144,6 +145,12 @@ The API will be available at `http://127.0.0.1:8086` 🚀.
 streamlit run streamlit_app/main.py 
 ```
 This will automatically open a web browser page at `http://127.0.0.1:8080` with your streamlit app 🚀.
+
+### 7️⃣ Optional : Create fake DB for testing
+```bash
+python -m app.db.signals
+```
+Run the script that will generate a full DB with 50 athletes, 2 coaches and 10 training sessions per athlete.
 
 ---
 
