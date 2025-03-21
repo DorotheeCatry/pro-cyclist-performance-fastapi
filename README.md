@@ -1,6 +1,3 @@
-Here is the **README** in **English**:  
-
----
 
 # 🚴 Pro Cyclist Performance API  
 
