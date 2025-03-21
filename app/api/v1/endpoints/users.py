@@ -4,16 +4,17 @@ from app.db.athlete import modify_athlete
 from app.db.selects import get_athlete_by_id, get_athlete_sessions, get_athlete_list
 from app.db.test_session import create_session
 from app.core.security import get_current_user
+from app.schemas.schemas import ResponseData
 
 router = APIRouter()
 
 @router.post("/modify_athlete")
-def api_modify_ahtlete(id: int, data: dict, current_user: dict= Depends(get_current_user)):
+def api_modify_ahtlete(id: int, data: dict, current_user: dict= Depends(get_current_user)) -> ResponseData:
     result = modify_athlete(id, data)
     return result
 
 @router.post("/create_session")
-def api_create_session(athlete_id: int, data: dict, current_user: dict=Depends(get_current_user)):
+def api_create_session(athlete_id: int, data: dict, current_user: dict=Depends(get_current_user)) -> ResponseData:
     result = create_session(athlete_id, data)
     return result
 
@@ -45,7 +46,7 @@ def delete_account(current_user: dict = Depends(get_current_user)):
     user_id = current_user["id"]
     conn = get_db_connection()
     cursor = conn.cursor()
-    conn.execute("PRAGMA foreign_keys = ON;")
+    conn.execute("PRAGMA foreign_keys = ON;") # Turns on the ON CASCADE deletion scheme.
     
     query = """DELETE FROM user WHERE id = ?"""
     

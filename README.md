@@ -46,6 +46,7 @@ PRO-CYCLIST-PERFORMANCE-API/
 │   │           │-- auth.py  # Authentication routes
 │   │           │-- stats.py # Statistics-related routes
 │   │           │-- users.py # User-related routes
+|   |           |-- stats.py # Statistics-related routes
 │   │-- core/                # Core configurations
 │   │   │-- config.py        # Configuration settings
 │   │   │-- security.py      # Security utilities

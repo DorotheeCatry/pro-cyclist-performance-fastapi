@@ -1,6 +1,9 @@
 from app.db.db_utils import get_db_connection
 
 def get_athlete_sessions(athlete_id: int):
+    """
+    Fetch and return the lists of all training sessions of given athlete.
+    """
     
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -16,7 +19,10 @@ def get_athlete_sessions(athlete_id: int):
 
 
 def get_athlete_by_id(athlete_id: int):
-        
+    """
+    Fetch and return the athlete at given id.
+    """   
+           
     conn = get_db_connection()
     cursor = conn.cursor()
     
@@ -29,6 +35,9 @@ def get_athlete_by_id(athlete_id: int):
     return results
 
 def get_athlete_list():
+    """
+    Fetch and return the complete list of athletes, minus the coaches.
+    """
     
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -49,5 +58,5 @@ def get_athlete_list():
 
 
 
-if __name__ == "__main__":
-    print(get_athlete_sessions(1))
+# if __name__ == "__main__":
+#     print(get_athlete_sessions(1))

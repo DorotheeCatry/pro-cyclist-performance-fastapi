@@ -11,9 +11,16 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/login")
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
+    """
+    Verify given password against its hash.
+    """
+    
     return pwd_context.verify(plain_password, hashed_password)
 
 def get_password_hash(password: str) -> str:
+    """
+    Hash a plain text password.
+    """
     return pwd_context.hash(password)
 
 def get_current_user(token: str = Security(oauth2_scheme)) -> dict:
@@ -27,17 +34,12 @@ def get_current_user(token: str = Security(oauth2_scheme)) -> dict:
         HTTPException: If the token is invalid or expired.
     """
     
-    print("DEBUG : ", token)
-    
     payload = verify_token(token)
-
-    print("DEBUG : ", payload)
     
     user_id: int = payload.get("sub")
 
     if user_id is None:
         raise HTTPException(status_code=401, detail="Invalid token")
-
     
     conn = get_db_connection()
     cursor = conn.cursor()

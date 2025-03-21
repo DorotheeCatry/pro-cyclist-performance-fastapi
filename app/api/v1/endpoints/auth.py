@@ -4,17 +4,7 @@ from app.db.db_utils import get_db_connection
 from app.db.athlete import create_athlete
 from app.core.security import get_password_hash, verify_password
 from app.utils.jwt_handler import create_access_token
-from typing import TypedDict
-
-class LoginData(TypedDict):
-    email : str
-    password: str
-    
-class RegisterData(TypedDict):
-    username : str
-    email : str
-    password : str
-    role : int
+from app.schemas.schemas import LoginData, RegisterData
 
 router = APIRouter()
 
@@ -61,8 +51,6 @@ def register(data: RegisterData):
         response["athlete"] = create_athlete(user_id)["message"]
         response["message"] = f"User {data["username"]} successfully created!"
         response["status"] = 1
-    
-    print(response["message"])
     
     return response
 
